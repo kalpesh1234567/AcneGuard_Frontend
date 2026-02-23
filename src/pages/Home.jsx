@@ -1,146 +1,150 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Sparkles, ArrowRight, ShieldCheck, Activity,
-    Utensils, Moon, ScanFace, LayoutDashboard, History
+    Sparkles, ArrowRight, ShieldCheck, ScanFace, Salad,
+    History, Brain, Activity, Users, Star
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
+    const { user } = useAuth();
+
     return (
-        <div className="space-y-16 py-8 animate-in fade-in duration-700">
+        <div className="space-y-20 py-4 animate-in fade-in duration-700">
 
-            {/* Hero Section - Food & Skin Theme */}
-            <section className="relative bg-teal-900 rounded-3xl overflow-hidden shadow-xl min-h-[400px] flex items-center">
+            {/* ── Hero ───────────────────────────────────────────────────── */}
+            <section className="relative bg-gradient-to-br from-teal-900 via-slate-900 to-slate-900 rounded-3xl overflow-hidden shadow-2xl min-h-[480px] flex items-center">
+                {/* Decorative blobs */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
-                {/* Decorative Background Elements */}
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-800/50 backdrop-blur-sm -skew-x-12 translate-x-20"></div>
-                <div className="absolute bottom-0 left-20 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl"></div>
-
-                <div className="relative z-10 grid md:grid-cols-2 gap-8 p-12 w-full">
-                    <div className="space-y-6 text-white">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-500/20 border border-teal-500/30 rounded-full text-xs font-medium text-teal-300">
-                            <Sparkles className="w-3 h-3" /> Bio-Individual Analysis
+                <div className="relative z-10 p-10 md:p-16 w-full">
+                    <div className="max-w-2xl space-y-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-500/20 border border-teal-500/30 rounded-full text-xs font-semibold text-teal-300 tracking-wide uppercase">
+                            <Sparkles className="w-3 h-3" /> AI-Powered Skin Intelligence
                         </div>
-                        <h1 className="text-5xl font-bold tracking-tight leading-tight">
-                            Nourish Your Skin <br />
-                            <span className="text-teal-400">From Within.</span>
+
+                        <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                            Know Your Skin.{' '}
+                            <span className="text-teal-400">Inside Out.</span>
                         </h1>
-                        <p className="text-slate-300 text-lg max-w-md">
-                            Discover how your diet, environment, and routine impact your dermal health with our AI-powered correlation engine.
+
+                        <p className="text-slate-300 text-lg leading-relaxed">
+                            Instantly detect acne severity from your selfie using Computer Vision,
+                            or analyze how your diet impacts your skin with our ML Risk Engine.
                         </p>
 
-                        <div className="flex flex-wrap gap-4 pt-4">
-                            <Link to="/assessment" className="bg-teal-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-400 transition shadow-lg shadow-teal-900/50 flex items-center gap-2">
-                                Start Full Analysis <ArrowRight className="w-4 h-4" />
+                        {/* Dual CTA */}
+                        <div className="flex flex-wrap gap-4 pt-2">
+                            <Link
+                                to={user ? '/assessment' : '/register'}
+                                className="flex items-center gap-2 bg-teal-500 text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-teal-400 transition-all shadow-lg shadow-teal-900/50 hover:scale-105 active:scale-95"
+                            >
+                                <ScanFace className="w-5 h-5" /> Start Skin Scan
+                            </Link>
+                            <Link
+                                to={user ? '/diet-check' : '/register'}
+                                className="flex items-center gap-2 bg-white/10 backdrop-blur text-white border border-white/20 px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-white/20 transition-all hover:scale-105 active:scale-95"
+                            >
+                                <Salad className="w-5 h-5" /> Check Diet Risk
                             </Link>
                         </div>
 
-                        <div className="pt-6 border-t border-white/10">
-                            <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-3">Explore Key Factors</p>
-                            <div className="flex flex-wrap gap-3">
-                                <Link to="/factors/skin" className="px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm font-medium hover:bg-blue-500/20 transition flex items-center gap-2">
-                                    <ScanFace className="w-4 h-4" /> Skin
-                                </Link>
-                                <Link to="/factors/food" className="px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-medium hover:bg-green-500/20 transition flex items-center gap-2">
-                                    <Utensils className="w-4 h-4" /> Diet
-                                </Link>
-                                <Link to="/factors/routine" className="px-4 py-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-medium hover:bg-purple-500/20 transition flex items-center gap-2">
-                                    <Moon className="w-4 h-4" /> Routine
-                                </Link>
+                        {/* Social proof */}
+                        <div className="flex items-center gap-6 pt-4 border-t border-white/10 text-sm">
+                            <div className="flex items-center gap-1.5 text-slate-300">
+                                <Users className="w-4 h-4 text-teal-400" />
+                                <span><strong className="text-white">10,000+</strong> Analyses done</span>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Visual Card Stack */}
-                    <div className="hidden md:flex justify-center items-center relative">
-                        {/* ... same visual stack ... */}
-                        <div className="absolute w-64 h-80 bg-white/10 backdrop-blur-md rounded-2xl -rotate-6 border border-white/10 shadow-2xl"></div>
-                        <div className="absolute w-64 h-80 bg-slate-900 rounded-2xl rotate-3 border border-slate-700 shadow-xl overflow-hidden flex flex-col p-6 space-y-4">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-rose-500/20 rounded-xl text-rose-500">
-                                    <Utensils className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-white">Dietary Impact</h4>
-                                    <p className="text-xs text-slate-400">Sugar & Hydration Log</p>
-                                </div>
-                            </div>
-                            <div className="h-px bg-slate-700 w-full"></div>
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-amber-500/20 rounded-xl text-amber-500">
-                                    <ScanFace className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-white">Skin Barrier</h4>
-                                    <p className="text-xs text-slate-400">pH & Oil Levels</p>
-                                </div>
+                            <div className="flex items-center gap-1.5 text-slate-300">
+                                <Star className="w-4 h-4 text-amber-400" />
+                                <span><strong className="text-white">4.9</strong> Accuracy rating</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Dashboard Grid Navigation */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-slate-900 px-2">Your Skin Wellness Hub</h2>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                    {/* 1. Skin Analysis Factors */}
-                    <Link to="/factors/skin" className="group p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200 transition">
-                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <ScanFace className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">Skin Analysis Factors</h3>
-                        <p className="text-sm text-slate-500">Visual diagnostics affecting your profile.</p>
-                    </Link>
-
-                    {/* 2. Food Recommendation Factors */}
-                    <Link to="/factors/food" className="group p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-green-200 transition">
-                        <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Utensils className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-green-700 transition-colors">Dietary Factors</h3>
-                        <p className="text-sm text-slate-500">Glycemic index and nutritional inputs.</p>
-                    </Link>
-
-                    {/* 3. Daily Routine Factors */}
-                    <Link to="/factors/routine" className="group p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-purple-200 transition">
-                        <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <Moon className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-purple-700 transition-colors">Daily Routine</h3>
-                        <p className="text-sm text-slate-500">Sleep, stress, and environmental impact.</p>
-                    </Link>
-
-                    {/* 4. Dashboard (Results) */}
-                    <Link to="/results" className="group p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-200 transition">
-                        <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <LayoutDashboard className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-teal-700 transition-colors">Active Dashboard</h3>
-                        <p className="text-sm text-slate-500">View your current protocol and charts.</p>
-                    </Link>
-
-                    {/* 5. History Factors */}
-                    <Link to="/history" className="group p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-200 transition">
-                        <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                            <History className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">History Log</h3>
-                        <p className="text-sm text-slate-500">Track progress over time.</p>
-                    </Link>
-
-                    {/* 6. Quick Start */}
-                    <Link to="/assessment" className="group p-6 bg-slate-900 rounded-2xl border border-slate-800 shadow-sm hover:shadow-xl transition flex flex-col items-center justify-center text-center">
-                        <div className="w-12 h-12 bg-white/10 text-teal-400 rounded-full flex items-center justify-center mb-4 group-hover:bg-teal-500 group-hover:text-white transition-colors">
-                            <ArrowRight className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-white mb-1">New Scan</h3>
-                        <p className="text-sm text-slate-400">Update your metrics</p>
-                    </Link>
+            {/* ── Feature Grid ──────────────────────────────────────────── */}
+            <section className="space-y-6">
+                <div className="text-center space-y-2">
+                    <h2 className="text-3xl font-extrabold text-slate-900">Two Powerful Ways to Understand Your Skin</h2>
+                    <p className="text-slate-500 max-w-xl mx-auto">Combine visual AI with lifestyle science for the most comprehensive acne analysis available.</p>
                 </div>
-            </div>
 
+                <div className="grid md:grid-cols-2 gap-6">
+                    {/* AI Skin Scan Card */}
+                    <div className="group relative bg-gradient-to-br from-teal-50 to-white rounded-2xl border border-teal-100 p-8 shadow-sm hover:shadow-lg transition-shadow overflow-hidden">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-teal-100/50 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none" />
+                        <div className="relative z-10 space-y-4">
+                            <div className="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-teal-200">
+                                <ScanFace className="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-extrabold text-slate-900">AI Skin Scan</h3>
+                                <p className="text-slate-500 mt-1 leading-relaxed">Upload a selfie or use your webcam. Our CNN model grades severity and maps acne to specific facial regions in seconds.</p>
+                            </div>
+                            <ul className="space-y-2 text-sm text-slate-600">
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-teal-500 flex-shrink-0" /> Severity grading (Clear → Severe)</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-teal-500 flex-shrink-0" /> Facial region mapping</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-teal-500 flex-shrink-0" /> Personalized medical recommendations</li>
+                            </ul>
+                            <Link to={user ? '/assessment' : '/register'} className="inline-flex items-center gap-2 text-teal-700 font-bold text-sm hover:gap-3 transition-all">
+                                Start Scan <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Diet Risk Check Card */}
+                    <div className="group relative bg-gradient-to-br from-amber-50 to-white rounded-2xl border border-amber-100 p-8 shadow-sm hover:shadow-lg transition-shadow overflow-hidden">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-100/50 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 pointer-events-none" />
+                        <div className="relative z-10 space-y-4">
+                            <div className="w-14 h-14 bg-amber-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-200">
+                                <Salad className="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-extrabold text-slate-900">Diet Risk Check</h3>
+                                <p className="text-slate-500 mt-1 leading-relaxed">Answer 12 lifestyle questions. Our Random Forest ML model (82% accuracy) predicts your dietary acne risk and explains exactly why.</p>
+                            </div>
+                            <ul className="space-y-2 text-sm text-slate-600">
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-amber-500 flex-shrink-0" /> Low / Medium / High risk score</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-amber-500 flex-shrink-0" /> Top 5 trigger factors identified</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-amber-500 flex-shrink-0" /> Actionable nutrition guidance</li>
+                            </ul>
+                            <Link to={user ? '/diet-check' : '/register'} className="inline-flex items-center gap-2 text-amber-700 font-bold text-sm hover:gap-3 transition-all">
+                                Check Diet Risk <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Stats ─────────────────────────────────────────────────── */}
+            <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                    { value: '43MB', label: 'Trained CNN Model', icon: <Brain className="w-5 h-5" /> },
+                    { value: '82%', label: 'Diet Model Accuracy', icon: <Activity className="w-5 h-5" /> },
+                    { value: '10K+', label: 'Training Samples', icon: <Users className="w-5 h-5" /> },
+                    { value: '4', label: 'Severity Grades', icon: <Star className="w-5 h-5" /> },
+                ].map(({ value, label, icon }) => (
+                    <div key={label} className="bg-white rounded-2xl border border-slate-200 p-6 text-center shadow-sm">
+                        <div className="w-10 h-10 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mx-auto mb-3">{icon}</div>
+                        <p className="text-3xl font-extrabold text-slate-900">{value}</p>
+                        <p className="text-sm text-slate-500 mt-1">{label}</p>
+                    </div>
+                ))}
+            </section>
+
+            {/* ── CTA Banner ────────────────────────────────────────────── */}
+            {!user && (
+                <section className="text-center bg-gradient-to-r from-teal-600 to-teal-500 rounded-3xl p-12 shadow-xl">
+                    <h2 className="text-3xl font-extrabold text-white mb-3">Ready to understand your skin?</h2>
+                    <p className="text-teal-100 mb-8 max-w-md mx-auto">Join thousands of users discovering the connection between their lifestyle and their skin.</p>
+                    <Link to="/register" className="inline-flex items-center gap-2 bg-white text-teal-700 font-extrabold px-8 py-4 rounded-xl hover:bg-teal-50 transition-all hover:scale-105 shadow-lg text-sm">
+                        Get Started Free <ArrowRight className="w-4 h-4" />
+                    </Link>
+                </section>
+            )}
         </div>
     );
 };
