@@ -12,7 +12,7 @@ import ResetPassword from './pages/ResetPassword';
 
 // Protected pages
 import Assessment from './pages/Assessment';
-import Results from './pages/Results';
+import AIScanResults from './pages/AIScanResults';
 import History from './pages/History';
 import DietCheck from './pages/DietCheck';
 import DietResults from './pages/DietResults';
@@ -29,21 +29,21 @@ function App() {
             <Router>
                 <Layout>
                     <Routes>
-                        {/* Public routes */}
+                        {/* Public */}
                         <Route path="/" element={<Home />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
 
-                        {/* Factor info pages */}
+                        {/* Factor info (public) */}
                         <Route path="/factors/skin" element={<SkinAnalysisFactors />} />
                         <Route path="/factors/food" element={<FoodRecommendationFactors />} />
                         <Route path="/factors/routine" element={<DailyRoutineFactors />} />
 
-                        {/* Protected routes */}
+                        {/* Protected */}
                         <Route path="/assessment" element={<PrivateRoute><Assessment /></PrivateRoute>} />
-                        <Route path="/results" element={<PrivateRoute><Results /></PrivateRoute>} />
+                        <Route path="/ai-results" element={<PrivateRoute><AIScanResults /></PrivateRoute>} />
                         <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
                         <Route path="/recovery" element={<PrivateRoute><RecoveryCheckin /></PrivateRoute>} />
                         <Route path="/diet-check" element={<PrivateRoute><DietCheck /></PrivateRoute>} />
