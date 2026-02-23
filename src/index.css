@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Custom Utilities if needed */
+.glass-panel {
+    @apply bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm;
+}
