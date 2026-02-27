@@ -35,6 +35,40 @@ const CircularProgress = ({ score, colorClass, bgClass }) => {
     );
 };
 
+// Helper component to render text containing newlines and bullet points natively
+const RenderFormattedText = ({ text }) => {
+    if (!text) return null;
+
+    // Split by newlines, handling potential "\r\n"
+    const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+
+    return (
+        <div className="text-sm text-slate-600 leading-relaxed space-y-2">
+            {lines.map((line, idx) => {
+                const trimmed = line.trim();
+                // Check if the line starts with a bullet point character (- or *)
+                const isBullet = trimmed.startsWith('-') || trimmed.startsWith('*');
+
+                if (isBullet) {
+                    // Extract text after the bullet character
+                    let content = trimmed.substring(1).trim();
+                    // Sometimes LLMs generate "* " instead of "- ", remove it
+                    if (content.startsWith('*')) content = content.substring(1).trim();
+
+                    return (
+                        <div key={idx} className="flex items-start gap-2 pl-2">
+                            <span className="text-teal-500 font-bold mt-0.5">•</span>
+                            <span>{content}</span>
+                        </div>
+                    );
+                } else {
+                    return <p key={idx}>{trimmed}</p>;
+                }
+            })}
+        </div>
+    );
+};
+
 const AIScanResults = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -165,7 +199,7 @@ const AIScanResults = () => {
                                 </div>
                                 <h3 className="font-bold text-slate-800 text-sm">Why it's happening</h3>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{explanation.why_it_happened}</p>
+                            <RenderFormattedText text={explanation.why_it_happened} />
                         </div>
 
                         {/* Diet */}
@@ -176,7 +210,7 @@ const AIScanResults = () => {
                                 </div>
                                 <h3 className="font-bold text-slate-800 text-sm">Dietary Adjustments</h3>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{explanation.diet_suggestions}</p>
+                            <RenderFormattedText text={explanation.diet_suggestions} />
                         </div>
 
                         {/* Skincare */}
@@ -187,7 +221,7 @@ const AIScanResults = () => {
                                 </div>
                                 <h3 className="font-bold text-slate-800 text-sm">Skincare Routine</h3>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{explanation.skincare_routine_suggestions}</p>
+                            <RenderFormattedText text={explanation.skincare_routine_suggestions} />
                         </div>
 
                         {/* Lifestyle */}
@@ -198,7 +232,7 @@ const AIScanResults = () => {
                                 </div>
                                 <h3 className="font-bold text-slate-800 text-sm">Lifestyle & Habits</h3>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{explanation.lifestyle_adjustments}</p>
+                            <RenderFormattedText text={explanation.lifestyle_adjustments} />
                         </div>
                     </div>
 
