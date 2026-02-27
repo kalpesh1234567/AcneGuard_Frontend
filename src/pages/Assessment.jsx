@@ -36,6 +36,16 @@ const Assessment = () => {
     const [cameraReady, setCameraReady] = useState(false);
     const [cameraDenied, setCameraDenied] = useState(false);
 
+    // Questionnaire state
+    const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+    const [routineData, setRoutineData] = useState({
+        facewash_used: '',
+        wash_frequency: '',
+        products_used: '',
+        sleep_hours: '',
+        extra_details: ''
+    });
+
     // ── Stop camera stream ────────────────────────────────────────────────────
     const stopStream = useCallback(() => {
         if (streamRef.current) {
@@ -126,6 +136,7 @@ const Assessment = () => {
     // ── AI Analysis with step animation ──────────────────────────────────────
     const handleAnalyze = async () => {
         if (!capturedImage) return;
+        setShowQuestionnaire(false);
         setIsAnalyzing(true);
         setError('');
         setAnalysisStep(0);
@@ -136,7 +147,7 @@ const Assessment = () => {
         }, 2200);
 
         try {
-            const result = await analyzeImage(capturedImage);
+            const result = await analyzeImage(capturedImage, routineData);
             clearInterval(stepTimer);
             navigate('/ai-results', { state: { result, previewUrl } });
         } catch (err) {
@@ -182,8 +193,8 @@ const Assessment = () => {
                             key={id}
                             onClick={() => switchTab(id)}
                             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${tab === id
-                                    ? 'bg-white text-teal-700 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-700'
+                                ? 'bg-white text-teal-700 shadow-sm'
+                                : 'text-slate-500 hover:text-slate-700'
                                 }`}
                         >
                             <Icon className="w-4 h-4" /> {label}
@@ -335,7 +346,7 @@ const Assessment = () => {
                     )}
 
                     {/* Action buttons */}
-                    {!isAnalyzing && (
+                    {!isAnalyzing && !showQuestionnaire && (
                         <div className="flex gap-3">
                             <button
                                 onClick={handleClear}
@@ -344,12 +355,103 @@ const Assessment = () => {
                                 <RefreshCw className="w-4 h-4" /> Retake
                             </button>
                             <button
-                                onClick={handleAnalyze}
+                                onClick={() => setShowQuestionnaire(true)}
                                 disabled={isAnalyzing}
                                 className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-xl font-bold text-sm hover:from-teal-500 hover:to-teal-400 transition-all shadow-lg shadow-teal-200 disabled:opacity-60 hover:scale-[1.01] active:scale-[0.99]"
                             >
                                 <ScanFace className="w-5 h-5" /> Analyze My Skin <ArrowRight className="w-4 h-4" />
                             </button>
+                        </div>
+                    )}
+
+                    {/* Questionnaire Section */}
+                    {showQuestionnaire && !isAnalyzing && (
+                        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-lg shadow-slate-100/50 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                            <h3 className="font-extrabold text-slate-800 text-lg flex items-center gap-2">
+                                <span className="text-xl">📋</span> Quick Skin Context
+                            </h3>
+                            <p className="text-sm text-slate-500 font-medium">Help our AI personalize your report by sharing a few details about your routine.</p>
+
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Face Wash / Cleanser</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. CeraVe Salicylic Acid Cleanser"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+                                        value={routineData.facewash_used}
+                                        onChange={e => setRoutineData({ ...routineData, facewash_used: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Wash Frequency</label>
+                                        <select
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition text-slate-600"
+                                            value={routineData.wash_frequency}
+                                            onChange={e => setRoutineData({ ...routineData, wash_frequency: e.target.value })}
+                                        >
+                                            <option value="">Select...</option>
+                                            <option value="rarely">Rarely</option>
+                                            <option value="once a day">Once a day</option>
+                                            <option value="twice a day">Twice a day</option>
+                                            <option value="more than twice">More than 2x</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Sleep per Night</label>
+                                        <select
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition text-slate-600"
+                                            value={routineData.sleep_hours}
+                                            onChange={e => setRoutineData({ ...routineData, sleep_hours: e.target.value })}
+                                        >
+                                            <option value="">Select...</option>
+                                            <option value="<5 hours">Less than 5 hrs</option>
+                                            <option value="5-6 hours">5-6 hours</option>
+                                            <option value="7-8 hours">7-8 hours</option>
+                                            <option value=">8 hours">More than 8 hrs</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Other Products Used</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Niacinamide serum, sunscreen, acne patches"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+                                        value={routineData.products_used}
+                                        onChange={e => setRoutineData({ ...routineData, products_used: e.target.value })}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Extra Context (Optional)</label>
+                                    <textarea
+                                        placeholder="Stressed lately? Change in diet? Hormone cycle?"
+                                        rows={2}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition resize-none"
+                                        value={routineData.extra_details}
+                                        onChange={e => setRoutineData({ ...routineData, extra_details: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => setShowQuestionnaire(false)}
+                                    className="px-5 py-3 rounded-xl border-2 border-slate-200 text-slate-600 font-semibold hover:border-slate-300 transition text-sm"
+                                >
+                                    Back
+                                </button>
+                                <button
+                                    onClick={handleAnalyze}
+                                    className="flex-1 flex items-center justify-center py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-xl font-bold text-sm hover:from-teal-500 hover:to-teal-400 transition-all shadow-lg shadow-teal-200 shadow-md active:scale-[0.99]"
+                                >
+                                    Analyze & Generate Report
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

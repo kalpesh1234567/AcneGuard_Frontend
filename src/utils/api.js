@@ -28,13 +28,16 @@ function dataURLtoFile(dataUrl, filename = 'face_capture.jpg') {
  * Upload an image (File or base64 dataURL) to POST /analyze
  * Returns: { analysis: {...}, explanation: {...} }
  */
-export async function analyzeImage(imageInput) {
+export async function analyzeImage(imageInput, userRoutine = null) {
     const file = typeof imageInput === 'string'
         ? dataURLtoFile(imageInput, 'face_capture.jpg')
         : imageInput;
 
     const formData = new FormData();
     formData.append('file', file);
+    if (userRoutine) {
+        formData.append('user_routine', JSON.stringify(userRoutine));
+    }
 
     const response = await apiClient.post('/analyze', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
