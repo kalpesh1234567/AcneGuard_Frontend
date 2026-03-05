@@ -5,7 +5,7 @@ import { BASE_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
 import {
     Salad, Loader2, AlertTriangle, ArrowRight, Activity, Droplets,
-    Moon, Utensils, Wheat, Fish, Flame, Coffee, HeartPulse, Brain, Zap, Check, ChevronRight
+    Moon, Utensils, Wheat, Fish, Flame, Coffee, HeartPulse, Brain, Zap, Check, CheckCircle2, ChevronRight
 } from 'lucide-react';
 
 const QUESTIONS = [
@@ -215,8 +215,8 @@ const DietCheck = () => {
                                                     key={opt.value}
                                                     onClick={() => handleSelect(q.id, opt.value)}
                                                     className={`relative p-5 rounded-2xl border-2 flex flex-col items-center gap-3 transition-all duration-200 ${isSelected
-                                                            ? 'border-amber-500 bg-amber-50 shadow-inner'
-                                                            : 'border-slate-100 bg-white hover:border-amber-200 hover:bg-slate-50'
+                                                        ? 'border-amber-500 bg-amber-50 shadow-inner'
+                                                        : 'border-slate-100 bg-white hover:border-amber-200 hover:bg-slate-50'
                                                         }`}
                                                 >
                                                     <div className={isSelected ? 'text-amber-600' : 'text-slate-400'}>{opt.icon}</div>
@@ -238,8 +238,8 @@ const DietCheck = () => {
                                                     key={opt}
                                                     onClick={() => handleSelect(q.id, opt)}
                                                     className={`px-4 py-2.5 rounded-full text-sm font-semibold border-2 transition-all duration-200 ${isSelected
-                                                            ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-200/50'
-                                                            : 'bg-white text-slate-600 border-slate-200 hover:border-amber-300 hover:text-amber-700'
+                                                        ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-200/50'
+                                                        : 'bg-white text-slate-600 border-slate-200 hover:border-amber-300 hover:text-amber-700'
                                                         }`}
                                                 >
                                                     {opt}
@@ -259,8 +259,8 @@ const DietCheck = () => {
                                                     key={opt}
                                                     onClick={() => handleSelect(q.id, opt)}
                                                     className={`flex-1 sm:flex-none px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${isSelected
-                                                            ? 'bg-white text-slate-900 shadow-sm ring-1 ring-black/5'
-                                                            : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                                                        ? 'bg-white text-slate-900 shadow-sm ring-1 ring-black/5'
+                                                        : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                                                         }`}
                                                 >
                                                     {opt}
@@ -325,8 +325,8 @@ const DietCheck = () => {
                                                     key={opt}
                                                     onClick={() => handleSelect(q.id, opt)}
                                                     className={`px-8 py-3 rounded-xl font-bold text-lg transition-all duration-200 border-2 ${isSelected
-                                                            ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-200/50'
-                                                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                                        ? 'bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-200/50'
+                                                        : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                                                         }`}
                                                 >
                                                     {opt}
