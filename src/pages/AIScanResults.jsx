@@ -4,8 +4,10 @@ import { saveFeedback } from '../utils/api';
 import {
     ScanFace, AlertTriangle, CheckCircle2, Loader2,
     ThumbsUp, ThumbsDown, Activity, MapPin, Sparkles,
-    Utensils, Droplets, HeartPulse, History, RotateCcw, ChevronRight
+    Utensils, Droplets, HeartPulse, History, RotateCcw, ChevronRight, Download
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const SEVERITY_CFG = {
     clear: { color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200', dot: 'bg-emerald-500', bar: 'bg-emerald-500', scoreRing: 'text-emerald-500', scoreBg: 'bg-emerald-100' },
@@ -78,6 +80,7 @@ const AIScanResults = () => {
     const [feedbackSent, setFeedbackSent] = useState(false);
     const [feedbackLoading, setFeedbackLoading] = useState(false);
     const [feedbackForm, setFeedbackForm] = useState({ user_agrees: null, corrected_severity: '', comment: '' });
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     if (!result) {
         return (
@@ -115,6 +118,39 @@ const AIScanResults = () => {
             setFeedbackSent(true);
         } catch { /* silently fail */ }
         finally { setFeedbackLoading(false); }
+    };
+
+    const handleDownloadPdf = async () => {
+        setIsGeneratingPdf(true);
+        try {
+            // Give React a moment to render the hidden PDF node
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            const element = document.getElementById('pdf-report-container');
+            if (!element) return;
+
+            // Render it temporarily visible in a fixed background container to ensure correct dimensions
+            element.style.display = 'block';
+
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+
+            element.style.display = 'none';
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save('AcneGuard_Skin_Report.pdf');
+        } catch (error) {
+            console.error("Failed to generate PDF:", error);
+            alert("Sorry, failed to generate the PDF report.");
+        } finally {
+            setIsGeneratingPdf(false);
+        }
     };
 
     return (
@@ -333,11 +369,97 @@ const AIScanResults = () => {
                     className="flex items-center gap-2 px-5 py-3 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-semibold text-sm hover:border-teal-300 hover:text-teal-700 transition">
                     <History className="w-4 h-4" /> View History
                 </Link>
+                <button onClick={handleDownloadPdf} disabled={isGeneratingPdf}
+                    className="flex items-center gap-2 px-5 py-3 bg-slate-900 text-white rounded-xl font-semibold text-sm hover:bg-slate-800 transition shadow-sm ml-auto disabled:opacity-60">
+                    {isGeneratingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    {isGeneratingPdf ? "Generating..." : "Download PDF"}
+                </button>
                 <Link to="/diet-check"
-                    className="flex items-center gap-2 px-5 py-3 bg-amber-500 text-white rounded-xl font-semibold text-sm hover:bg-amber-400 transition shadow-sm ml-auto">
+                    className="flex items-center w-full justify-center gap-2 px-5 py-3 mt-2 bg-amber-500 text-white rounded-xl font-semibold text-sm hover:bg-amber-400 transition shadow-sm ml-auto">
                     Also Check Diet <ChevronRight className="w-4 h-4" />
                 </Link>
             </div>
+
+            {/* ── Hidden Printable PDF Layout ── */}
+            <div id="pdf-report-container" style={{ display: 'none', position: 'absolute', top: '-10000px', width: '800px', background: 'white', padding: '40px', fontFamily: 'sans-serif' }}>
+                {/* Header */}
+                <div style={{ textAlign: 'center', marginBottom: '30px', borderBottom: '2px solid #e2e8f0', paddingBottom: '20px' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '40px', height: '40px', backgroundColor: '#0f766e', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+                        </div>
+                        <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>AcneGuard</h1>
+                    </div>
+                    <p style={{ color: '#64748b', marginTop: '8px' }}>Personal AI Skin Analysis Report</p>
+                </div>
+
+                {/* Body Content */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
+                    <div>
+                        <p style={{ color: '#64748b', fontSize: '14px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 'bold' }}>Detected Severity</p>
+                        <h2 style={{ fontSize: '36px', fontWeight: 'bold', textTransform: 'capitalize', color: '#0f172a', margin: 0 }}>{severity}</h2>
+                        {acneType && <p style={{ margin: '8px 0 0 0', fontWeight: 'bold', color: '#0f766e' }}>Type: <span style={{ color: '#475569', fontWeight: 'normal' }}>{acneType}</span></p>}
+                        {location_ && <p style={{ margin: '4px 0 0 0', fontWeight: 'bold', color: '#0f766e' }}>Region: <span style={{ color: '#475569', fontWeight: 'normal' }}>{location_}</span></p>}
+                    </div>
+                    {explanation?.skin_score && (
+                        <div style={{ textAlign: 'center', background: '#f8fafc', padding: '15px 25px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                            <p style={{ fontSize: '42px', fontWeight: 'bold', color: '#0f766e', margin: 0 }}>{explanation.skin_score}/100</p>
+                            <p style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', margin: 0 }}>Skin Score</p>
+                        </div>
+                    )}
+                </div>
+
+                {explanation && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '30px' }}>
+                        <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginTop: 0 }}>Why It Happened</h3>
+                            <div style={{ fontSize: '14px', color: '#475569' }}><RenderFormattedText text={explanation.why_it_happened} /></div>
+                        </div>
+                        <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginTop: 0 }}>Skincare Routine</h3>
+                            <div style={{ fontSize: '14px', color: '#475569' }}><RenderFormattedText text={explanation.skincare_routine_suggestions} /></div>
+                        </div>
+                        <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginTop: 0 }}>Dietary Adjustments</h3>
+                            <div style={{ fontSize: '14px', color: '#475569' }}><RenderFormattedText text={explanation.diet_suggestions} /></div>
+                        </div>
+                        <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginTop: 0 }}>Lifestyle Adjustments</h3>
+                            <div style={{ fontSize: '14px', color: '#475569' }}><RenderFormattedText text={explanation.lifestyle_adjustments} /></div>
+                        </div>
+                    </div>
+                )}
+
+                {explanation?.food_card && (
+                    <div style={{ background: '#ecfdf5', padding: '24px', borderRadius: '16px', border: '1px solid #a7f3d0', marginBottom: '30px' }}>
+                        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#064e3b', margin: '0 0 16px 0' }}>{explanation.food_card.title}</h3>
+                        <p style={{ fontSize: '14px', color: '#065f46', marginBottom: '20px', fontStyle: 'italic' }}>"{explanation.food_card.why_this_food}"</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div>
+                                <h4 style={{ color: '#047857', marginTop: 0 }}>Include More:</h4>
+                                <ul style={{ fontSize: '14px', color: '#064e3b', paddingLeft: '20px' }}>
+                                    {explanation.food_card.recommended_foods?.map((f, i) => <li key={i}>{f}</li>)}
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 style={{ color: '#be123c', marginTop: 0 }}>Reduce:</h4>
+                                <ul style={{ fontSize: '14px', color: '#881337', paddingLeft: '20px' }}>
+                                    {explanation.food_card.foods_to_limit?.map((f, i) => <li key={i}>{f}</li>)}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Required Disclaimer */}
+                <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '2px dashed #cbd5e1', textAlign: 'center' }}>
+                    <p style={{ color: '#0f172a', fontWeight: 'bold', fontSize: '15px', marginBottom: '8px' }}>Important Medical Disclaimer</p>
+                    <p style={{ color: '#64748b', fontSize: '13px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.5' }}>
+                        This is an AI-generated report for better recommendations and educational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. For medical help and definitive diagnoses, please visit a certified dermatologist or doctor.
+                    </p>
+                </div>
+            </div>
+
         </div>
     );
 };
