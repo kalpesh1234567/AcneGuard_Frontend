@@ -381,13 +381,30 @@ const Assessment = () => {
                                         onChange={e => setRoutineData({ ...routineData, facewash_used: e.target.value })}
                                     >
                                         <option value="">Select...</option>
-                                        <option value="Salicylic Acid Cleanser">Salicylic Acid Cleanser</option>
-                                        <option value="Benzoyl Peroxide Wash">Benzoyl Peroxide Wash</option>
-                                        <option value="Gentle/Hydrating Cleanser">Gentle/Hydrating Cleanser</option>
-                                        <option value="Exfoliating Scrub">Exfoliating Scrub</option>
-                                        <option value="Foaming/Gel Cleanser">Foaming/Gel Cleanser</option>
-                                        <option value="None / Just Water">None / Just Water</option>
-                                        <option value="Other">Other</option>
+                                        <optgroup label="Popular Gentle Cleansers">
+                                            <option value="Cetaphil Gentle Skin Cleanser">Cetaphil Gentle Skin Cleanser</option>
+                                            <option value="Cetaphil Daily Exfoliating Cleanser">Cetaphil Daily Exfoliating Cleanser</option>
+                                            <option value="CeraVe Hydrating Facial Cleanser">CeraVe Hydrating Facial Cleanser</option>
+                                            <option value="Simple Refreshing Facial Wash">Simple Refreshing Facial Wash</option>
+                                        </optgroup>
+                                        <optgroup label="Popular Acne / Active Cleansers">
+                                            <option value="CeraVe Renewing SA Cleanser">CeraVe Renewing SA Cleanser</option>
+                                            <option value="Minimalist 2% Salicylic Acid Face Wash">Minimalist 2% Salicylic Acid Face Wash</option>
+                                            <option value="PanOxyl Acne Foaming Wash (Benzoyl Peroxide)">PanOxyl Acne Foaming Wash (Benzoyl Peroxide)</option>
+                                            <option value="Neutrogena Oil-Free Acne Wash">Neutrogena Oil-Free Acne Wash</option>
+                                            <option value="Plum Green Tea Pore Cleansing Face Wash">Plum Green Tea Pore Cleansing Face Wash</option>
+                                        </optgroup>
+                                        <optgroup label="Everyday / Natural Brands">
+                                            <option value="Mamaearth Ubtan Face Wash">Mamaearth Ubtan Face Wash</option>
+                                            <option value="Mamaearth Tea Tree Face Wash">Mamaearth Tea Tree Face Wash</option>
+                                            <option value="Himalaya Purifying Neem Face Wash">Himalaya Purifying Neem Face Wash</option>
+                                            <option value="Garnier Men Acno Fight Face Wash">Garnier Men Action Fight Face Wash</option>
+                                            <option value="Clean & Clear Foaming Face Wash">Clean & Clear Foaming Face Wash</option>
+                                        </optgroup>
+                                        <optgroup label="Other">
+                                            <option value="Just Water">Just Water</option>
+                                            <option value="Other / Not Listed">Other / Not Listed</option>
+                                        </optgroup>
                                     </select>
                                 </div>
 
@@ -430,14 +447,28 @@ const Assessment = () => {
                                         onChange={e => setRoutineData({ ...routineData, products_used: e.target.value })}
                                     >
                                         <option value="">Select...</option>
-                                        <option value="Niacinamide Serum">Niacinamide Serum</option>
-                                        <option value="Vitamin C">Vitamin C</option>
-                                        <option value="Retinoids / Retinol">Retinoids / Retinol</option>
-                                        <option value="Salicylic Acid / BHA Toner">Salicylic Acid / BHA Toner</option>
-                                        <option value="Moisturizer & Sunscreen only">Moisturizer & Sunscreen only</option>
-                                        <option value="Acne Patches / Spot Treatment">Acne Patches / Spot Treatment</option>
-                                        <option value="None">None</option>
-                                        <option value="Other">Other</option>
+                                        <optgroup label="Serums & Actives">
+                                            <option value="The Ordinary Niacinamide 10% + Zinc 1%">The Ordinary Niacinamide 10% + Zinc 1%</option>
+                                            <option value="Minimalist 10% Niacinamide Face Serum">Minimalist 10% Niacinamide Face Serum</option>
+                                            <option value="Paula's Choice 2% BHA Liquid Exfoliant">Paula's Choice 2% BHA Liquid Exfoliant</option>
+                                            <option value="The Ordinary AHA 30% + BHA 2% Peeling Solution">The Ordinary AHA 30% + BHA 2% Peeling Solution</option>
+                                            <option value="Vitamin C Serum (Any brand)">Vitamin C Serum (Any brand)</option>
+                                            <option value="Retinol / Retinoid Serum (Any brand)">Retinol / Retinoid Serum (Any brand)</option>
+                                        </optgroup>
+                                        <optgroup label="Moisturizers & Treatments">
+                                            <option value="Cetaphil Moisturizing Cream/Lotion">Cetaphil Moisturizing Cream/Lotion</option>
+                                            <option value="CeraVe Daily Moisturizing Lotion">CeraVe Daily Moisturizing Lotion</option>
+                                            <option value="Neutrogena Hydro Boost Water Gel">Neutrogena Hydro Boost Water Gel</option>
+                                            <option value="Ponds Super Light Gel Face Moisturizer">Ponds Super Light Gel Face Moisturizer</option>
+                                            <option value="CosRx Advanced Snail 96 Mucin Power Essence">CosRx Advanced Snail 96 Mucin Power Essence</option>
+                                            <option value="Acne Pimple Patches (Mighty Patch, CosRx, etc.)">Acne Pimple Patches (Mighty Patch, CosRx, etc.)</option>
+                                            <option value="Medical Ointment (Tretinoin, Adapalene, Benzoyl Peroxide)">Medical Ointment (Tretinoin, Adapalene, Benzoyl Peroxide)</option>
+                                        </optgroup>
+                                        <optgroup label="Other">
+                                            <option value="Only Daily Sunscreen">Only Daily Sunscreen</option>
+                                            <option value="Nothing">Nothing</option>
+                                            <option value="Other / Not Listed">Other / Not Listed</option>
+                                        </optgroup>
                                     </select>
                                 </div>
 
