@@ -79,24 +79,22 @@ const DietResults = () => {
             )}
 
             {/* Recommendations */}
-            {Object.entries(recommendations).map(([category, items]) => (
-                items?.length > 0 && (
-                    <div key={category} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
-                        <div className="flex items-center gap-2 mb-1">
-                            <ListChecks className="w-5 h-5 text-teal-600" />
-                            <h2 className="font-extrabold text-slate-900 capitalize">{category.replace(/_/g, ' ')} Recommendations</h2>
-                        </div>
-                        <ul className="space-y-2">
-                            {items.map((item, i) => (
-                                <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
-                                    <ShieldCheck className="w-4 h-4 text-teal-500 flex-shrink-0 mt-0.5" />
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
+            {recommendations && recommendations.length > 0 && (
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-3">
+                    <div className="flex items-center gap-2 mb-1">
+                        <ListChecks className="w-5 h-5 text-teal-600" />
+                        <h2 className="font-extrabold text-slate-900">Lifestyle & Diet Fixes</h2>
                     </div>
-                )
-            ))}
+                    <ul className="space-y-3">
+                        {recommendations.map((item, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                                <ShieldCheck className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" />
+                                <span>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {/* Actions */}
             <div className="flex flex-wrap gap-4 pb-8">
