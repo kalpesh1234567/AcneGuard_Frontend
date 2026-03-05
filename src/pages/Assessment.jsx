@@ -375,13 +375,20 @@ const Assessment = () => {
                             <div className="space-y-3">
                                 <div>
                                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Face Wash / Cleanser</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. CeraVe Salicylic Acid Cleanser"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+                                    <select
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition text-slate-600"
                                         value={routineData.facewash_used}
                                         onChange={e => setRoutineData({ ...routineData, facewash_used: e.target.value })}
-                                    />
+                                    >
+                                        <option value="">Select...</option>
+                                        <option value="Salicylic Acid Cleanser">Salicylic Acid Cleanser</option>
+                                        <option value="Benzoyl Peroxide Wash">Benzoyl Peroxide Wash</option>
+                                        <option value="Gentle/Hydrating Cleanser">Gentle/Hydrating Cleanser</option>
+                                        <option value="Exfoliating Scrub">Exfoliating Scrub</option>
+                                        <option value="Foaming/Gel Cleanser">Foaming/Gel Cleanser</option>
+                                        <option value="None / Just Water">None / Just Water</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
@@ -417,13 +424,21 @@ const Assessment = () => {
 
                                 <div>
                                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">Other Products Used</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. Niacinamide serum, sunscreen, acne patches"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition"
+                                    <select
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition text-slate-600"
                                         value={routineData.products_used}
                                         onChange={e => setRoutineData({ ...routineData, products_used: e.target.value })}
-                                    />
+                                    >
+                                        <option value="">Select...</option>
+                                        <option value="Niacinamide Serum">Niacinamide Serum</option>
+                                        <option value="Vitamin C">Vitamin C</option>
+                                        <option value="Retinoids / Retinol">Retinoids / Retinol</option>
+                                        <option value="Salicylic Acid / BHA Toner">Salicylic Acid / BHA Toner</option>
+                                        <option value="Moisturizer & Sunscreen only">Moisturizer & Sunscreen only</option>
+                                        <option value="Acne Patches / Spot Treatment">Acne Patches / Spot Treatment</option>
+                                        <option value="None">None</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                 </div>
 
                                 <div>
