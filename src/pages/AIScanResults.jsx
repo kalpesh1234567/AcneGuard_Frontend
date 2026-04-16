@@ -202,7 +202,7 @@ const AIScanResults = () => {
 
                     {/* Scale bar */}
                     <div>
-                        <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-bold uppercase tracking-wider">
+                        <div className="grid grid-cols-4 text-center text-xs text-slate-400 mb-1.5 font-bold uppercase tracking-wider">
                             {SEVERITIES.map(s => (
                                 <span key={s} className={s === severity ? cfg.color : ''}>{s}</span>
                             ))}

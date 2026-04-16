@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL, TOKEN_KEY } from '../config';
 
-const apiClient = axios.create({ baseURL: BASE_URL, timeout: 60000, headers: { 'ngrok-skip-browser-warning': 'true' } });
+const apiClient = axios.create({ baseURL: BASE_URL, timeout: 120000 });
 
 // Auto-attach JWT to every request
 apiClient.interceptors.request.use((config) => {

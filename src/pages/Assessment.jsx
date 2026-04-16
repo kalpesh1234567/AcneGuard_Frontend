@@ -35,6 +35,7 @@ const Assessment = () => {
     const [error, setError] = useState('');
     const [cameraReady, setCameraReady] = useState(false);
     const [cameraDenied, setCameraDenied] = useState(false);
+    const [countdown, setCountdown] = useState(null); // null | 3 | 2 | 1
 
     // Questionnaire state
     const [showQuestionnaire, setShowQuestionnaire] = useState(false);
@@ -45,6 +46,8 @@ const Assessment = () => {
         sleep_hours: '',
         extra_details: ''
     });
+    const [otherFacewash, setOtherFacewash] = useState('');
+    const [otherProducts, setOtherProducts] = useState('');
 
     // ── Stop camera stream ────────────────────────────────────────────────────
     const stopStream = useCallback(() => {
@@ -59,7 +62,14 @@ const Assessment = () => {
     useEffect(() => {
         if (tab === 'camera' && !capturedImage) {
             setCameraDenied(false);
-            navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'user' } })
+            // HD constraints for a sharper, clearer video stream
+            navigator.mediaDevices?.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                }
+            })
                 .then(stream => {
                     streamRef.current = stream;
                     if (videoRef.current) {
@@ -75,20 +85,34 @@ const Assessment = () => {
         return () => stopStream();
     }, [tab, capturedImage, stopStream]);
 
-    // ── Capture snapshot from webcam ──────────────────────────────────────────
+    // ── Capture snapshot from webcam (with 3-second countdown) ────────────────
     const handleCapture = () => {
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        if (!video || !canvas) return;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        canvas.toBlob(blob => {
-            const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
-            setCapturedImage(file);
-            setPreviewUrl(URL.createObjectURL(file));
-            stopStream();
-        }, 'image/jpeg', 0.92);
+        if (countdown !== null) return; // already counting down
+        let count = 3;
+        setCountdown(count);
+        const timer = setInterval(() => {
+            count -= 1;
+            if (count > 0) {
+                setCountdown(count);
+            } else {
+                clearInterval(timer);
+                setCountdown(null);
+                // Take the actual snapshot
+                const video = videoRef.current;
+                const canvas = canvasRef.current;
+                if (!video || !canvas) return;
+                canvas.width = video.videoWidth || 1280;
+                canvas.height = video.videoHeight || 720;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                // Higher quality JPEG (0.95) for a clearer image
+                canvas.toBlob(blob => {
+                    const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                    setCapturedImage(file);
+                    setPreviewUrl(URL.createObjectURL(file));
+                    stopStream();
+                }, 'image/jpeg', 0.95);
+            }
+        }, 1000);
     };
 
     // ── File upload handlers ──────────────────────────────────────────────────
@@ -116,11 +140,18 @@ const Assessment = () => {
         setCapturedImage(null);
         setPreviewUrl(null);
         setError('');
+        setCountdown(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
         if (tab === 'camera') {
-            // restart camera
+            // restart camera with HD constraints
             setCameraReady(false);
-            navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'user' } })
+            navigator.mediaDevices?.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                }
+            })
                 .then(stream => {
                     streamRef.current = stream;
                     if (videoRef.current) {
@@ -147,7 +178,11 @@ const Assessment = () => {
         }, 2200);
 
         try {
-            const result = await analyzeImage(capturedImage, routineData);
+            const finalRoutine = { ...routineData };
+            if (finalRoutine.facewash_used === 'Other / Not Listed') finalRoutine.facewash_used = otherFacewash || 'Other';
+            if (finalRoutine.products_used === 'Other / Not Listed') finalRoutine.products_used = otherProducts || 'Other';
+
+            const result = await analyzeImage(capturedImage, finalRoutine);
             clearInterval(stepTimer);
             navigate('/ai-results', { state: { result, previewUrl } });
         } catch (err) {
@@ -270,6 +305,14 @@ const Assessment = () => {
                                             <div className="w-48 h-60 border-2 border-teal-400/70 rounded-[50%] border-dashed opacity-70" />
                                         </div>
                                     )}
+                                    {/* Countdown overlay */}
+                                    {countdown !== null && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-none">
+                                            <span className="text-white font-black drop-shadow-lg" style={{ fontSize: '6rem', lineHeight: 1, textShadow: '0 0 24px rgba(45,212,191,0.8)' }}>
+                                                {countdown}
+                                            </span>
+                                        </div>
+                                    )}
                                     {!cameraReady && (
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
@@ -283,16 +326,20 @@ const Assessment = () => {
                         {!cameraDenied && (
                             <button
                                 onClick={handleCapture}
-                                disabled={!cameraReady}
+                                disabled={!cameraReady || countdown !== null}
                                 className="w-full flex items-center justify-center gap-3 py-4 bg-teal-600 text-white rounded-2xl font-bold text-base hover:bg-teal-500 transition disabled:opacity-40 shadow-lg shadow-teal-200"
                             >
-                                <Camera className="w-5 h-5" /> Capture Photo
+                                {countdown !== null ? (
+                                    <><Loader2 className="w-5 h-5 animate-spin" /> Taking photo in {countdown}…</>
+                                ) : (
+                                    <><Camera className="w-5 h-5" /> Capture Photo</>
+                                )}
                             </button>
                         )}
 
                         <div className="bg-teal-50 border border-teal-100 rounded-2xl p-4 text-center">
                             <p className="text-sm text-teal-700 font-medium">
-                                Position your face inside the oval guide, then tap <strong>Capture Photo</strong>.
+                                Position your face inside the oval guide, then tap <strong>Capture Photo</strong>. Hold still — a 3-second countdown will give you time to steady yourself.
                             </p>
                         </div>
                     </div>
@@ -406,6 +453,15 @@ const Assessment = () => {
                                             <option value="Other / Not Listed">Other / Not Listed</option>
                                         </optgroup>
                                     </select>
+                                    {routineData.facewash_used === 'Other / Not Listed' && (
+                                        <input
+                                            type="text"
+                                            placeholder="Please specify your face wash"
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition mt-2 animate-in fade-in slide-in-from-top-1"
+                                            value={otherFacewash}
+                                            onChange={e => setOtherFacewash(e.target.value)}
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
@@ -470,6 +526,15 @@ const Assessment = () => {
                                             <option value="Other / Not Listed">Other / Not Listed</option>
                                         </optgroup>
                                     </select>
+                                    {routineData.products_used === 'Other / Not Listed' && (
+                                        <input
+                                            type="text"
+                                            placeholder="Please specify your other products"
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition mt-2 animate-in fade-in slide-in-from-top-1"
+                                            value={otherProducts}
+                                            onChange={e => setOtherProducts(e.target.value)}
+                                        />
+                                    )}
                                 </div>
 
                                 <div>
